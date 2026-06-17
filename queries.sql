@@ -42,7 +42,7 @@ FROM employees e  --основная таблица
 INNER JOIN sales s on employee_id = sales_person_id --добавляем таблицу sales с помощью общего столбца
 INNER JOIN products p on p.product_id = s.product_id --добавляем таблицу products с помощью общего столбца
 group BY CONCAT(e.first_name, ' ', e.last_name), TO_CHAR(sale_date, 'FMday'), TO_CHAR(sale_date, 'ID') --группируем данные по продавцам и по дням недели
-order by seller, TO_CHAR(sale_date, 'ID') ; --сортируем по продавцам по алфавиту и по дням недели по идентификатору ID(напр:1=monday)
+order by TO_CHAR(sale_date, 'ID'), seller; --сортируем по продавцам по алфавиту и по дням недели по идентификатору ID(напр:1=monday)
 
 
 --Подготовьте в файл age_groups.csv с возрастными группами покупателей
