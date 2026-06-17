@@ -36,12 +36,12 @@ order by average_income; --сортируем по возрастанию сре
 --Подготовьте в файл day_of_the_week_income.csv отчет с данными по выручке по каждому продавцу и дню недели
 SELECT --выбор столбцов в финальной таблице
 CONCAT(e.first_name, ' ', e.last_name) AS seller, --объединение двух столбцов в один
-TO_CHAR(sale_date, 'FMday') as day_of_week, --преобразование даты в день недели
+LOWER(TO_CHAR(sale_date, 'FMDay')) as day_of_week, --преобразование даты в день недели
 FLOOR(SUM(p.price*s.quantity)) as income --подсчет средней выручки по продавцам, округлив до меньшего
 FROM employees e  --основная таблица
 INNER JOIN sales s on employee_id = sales_person_id --добавляем таблицу sales с помощью общего столбца
 INNER JOIN products p on p.product_id = s.product_id --добавляем таблицу products с помощью общего столбца
-group BY CONCAT(e.first_name, ' ', e.last_name), TO_CHAR(sale_date, 'FMday'), TO_CHAR(sale_date, 'ID') --группируем данные по продавцам и по дням недели
+group BY CONCAT(e.first_name, ' ', e.last_name), LOWER(TO_CHAR(sale_date, 'FMDay')), TO_CHAR(sale_date, 'ID') --группируем данные по продавцам и по дням недели
 order by TO_CHAR(sale_date, 'ID'), seller; --сортируем по продавцам по алфавиту и по дням недели по идентификатору ID(напр:1=monday)
 
 
