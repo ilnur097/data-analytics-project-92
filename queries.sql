@@ -8,8 +8,8 @@ SELECT --выбор столбцов в финальной таблице
 CONCAT(employees.first_name, ' ', employees.last_name) AS seller, --склеивание двух столбцов в один  
 COUNT(*) as operations, --подсчет общего количества строк(в данном случае кол-во сделок)
 FLOOR(SUM(price*quantity)) as income --подсчет выручки продавца с округлением в меньшую сторону
-FROM employees --основная таблица
-INNER JOIN sales on employee_id = sales_person_id --добавляем таблицу sales с помощью общего столбца 
+FROM sales --основная таблица
+INNER JOIN employees on employee_id = sales_person_id --добавляем таблицу employees с помощью общего столбца 
 INNER JOIN products on products.product_id = sales.product_id --добавляем таблицу products с помощью общего столбца
 group BY CONCAT(employees.first_name, ' ', employees.last_name) --группируем данные по продавцу, чтобы были уникальные значения
 order BY income desc --сортируем по убыванию выручки
@@ -19,8 +19,8 @@ LIMIT 10; --отображаем 10 строк
 SELECT --выбор столбцов в финальной таблице
 CONCAT(e.first_name, ' ', e.last_name) AS seller, --объединение двух столбцов в один
 FLOOR(AVG(p.price*s.quantity)) as average_income --подсчет средней выручки по продавцам, округлив до меньшего
-FROM employees e --основная таблица
-INNER JOIN sales s on employee_id = sales_person_id --добавляем таблицу sales с помощью общего столбца
+FROM sales s --основная таблица
+INNER JOIN employees e employee_id = sales_person_id --добавляем таблицу employees с помощью общего столбца
 INNER JOIN products p on p.product_id = s.product_id --добавляем таблицу products с помощью общего столбца
 group BY CONCAT(e.first_name, ' ', e.last_name) --группируем данные по продавцам
 having AVG(p.price*s.quantity) < ( --условие что, среднее по продавцам будет меньше , чем среднее по общей выручки с внутренним запросом
@@ -36,13 +36,13 @@ order by average_income; --сортируем по возрастанию сре
 --Подготовьте в файл day_of_the_week_income.csv отчет с данными по выручке по каждому продавцу и дню недели
 SELECT --выбор столбцов в финальной таблице
 CONCAT(e.first_name, ' ', e.last_name) AS seller, --объединение двух столбцов в один
-LOWER(TO_CHAR(sale_date, 'FMDay')) as day_of_week, --преобразование даты в день недели
+TO_CHAR(sale_date, 'FMday') as day_of_week, --преобразование даты в день недели
 FLOOR(SUM(p.price*s.quantity)) as income --подсчет средней выручки по продавцам, округлив до меньшего
-FROM employees e  --основная таблица
-INNER JOIN sales s on employee_id = sales_person_id --добавляем таблицу sales с помощью общего столбца
+FROM sales s  --основная таблица
+INNER JOIN employees e on employee_id = sales_person_id --добавляем таблицу employees с помощью общего столбца
 INNER JOIN products p on p.product_id = s.product_id --добавляем таблицу products с помощью общего столбца
-group BY CONCAT(e.first_name, ' ', e.last_name), LOWER(TO_CHAR(sale_date, 'FMDay')), TO_CHAR(sale_date, 'ID') --группируем данные по продавцам и по дням недели
-order by TO_CHAR(sale_date, 'ID'), seller; --сортируем по продавцам по алфавиту и по дням недели по идентификатору ID(напр:1=monday)
+group BY CONCAT(e.first_name, ' ', e.last_name), TO_CHAR(sale_date, 'FMday'), TO_CHAR(sale_date, 'ID') --группируем данные по продавцам и по дням недели
+order by seller, TO_CHAR(sale_date, 'ID') ; --сортируем по продавцам по алфавиту и по дням недели по идентификатору ID(напр:1=monday)
 
 
 --Подготовьте в файл age_groups.csv с возрастными группами покупателей
